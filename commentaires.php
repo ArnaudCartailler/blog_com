@@ -2,13 +2,13 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <title>Mon blog</title>
+        <title>commentaire</title>
 	<link href="style.css" rel="stylesheet" />
     </head>
 
     <body>
-        <h1>Mon super blog !</h1>
-        <p><a href="index.php">Retour à la liste des billets</a></p>
+        <h1>Blog</h1>
+        <p><a href="index.php">Go back</a></p>
 
 <?php
 // Connexion à la base de données
@@ -28,35 +28,46 @@ $donnees = $req->fetch();
 ?>
 
 <div class="news">
+
     <h3>
         <?php echo htmlspecialchars($donnees['titre']); ?>
         <em>le <?php echo $donnees['date_creation_fr']; ?></em>
     </h3>
 
     <p>
+
     <?php
     echo nl2br(htmlspecialchars($donnees['contenu']));
     ?>
+
     </p>
 </div>
 
-<h2>Commentaires</h2>
+<p>Commentaires</p>
 
 <?php
-$req->closeCursor(); // Important : on libère le curseur pour la prochaine requête
 
-// Récupération des commentaires
-$req = $bdd->prepare('SELECT auteur, commentaire, DATE_FORMAT(date_commentaire, \'%d/%m/%Y à %Hh%imin%ss\') AS date_commentaire_fr FROM commentaires WHERE id_billet = ? ORDER BY date_commentaire');
+$req->closeCursor();
+
+
+$req = $bdd->prepare('SELECT auteur, commentaire, DATE_FORMAT(date_commentaire, \'%d/%m/%Y \') AS date_commentaire_fr FROM commentaires WHERE id_billets = ? ORDER BY date_commentaire');
 $req->execute(array($_GET['billet']));
 
-while ($donnees = $req->fetch())
-{
+while ($donnees = $req->fetch()){
+
 ?>
+
 <p><strong><?php echo htmlspecialchars($donnees['auteur']); ?></strong> le <?php echo $donnees['date_commentaire_fr']; ?></p>
+
 <p><?php echo nl2br(htmlspecialchars($donnees['commentaire'])); ?></p>
+
 <?php
-} // Fin de la boucle des commentaires
+
+}
+
 $req->closeCursor();
+
 ?>
 </body>
+
 </html>
